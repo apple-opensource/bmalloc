@@ -33,11 +33,15 @@ namespace bmalloc {
 
 IsoHeapImplBase::IsoHeapImplBase()
 {
-    PerProcess<AllIsoHeaps>::get()->add(this);
 }
 
 IsoHeapImplBase::~IsoHeapImplBase()
 {
+}
+
+void IsoHeapImplBase::addToAllIsoHeaps()
+{
+    AllIsoHeaps::get()->add(this);
 }
 
 void IsoHeapImplBase::scavengeNow()

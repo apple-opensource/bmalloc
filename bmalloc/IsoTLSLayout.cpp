@@ -29,15 +29,17 @@
 
 namespace bmalloc {
 
-IsoTLSLayout::IsoTLSLayout(const std::lock_guard<StaticMutex>&)
+DEFINE_STATIC_PER_PROCESS_STORAGE(IsoTLSLayout);
+
+IsoTLSLayout::IsoTLSLayout(const std::lock_guard<Mutex>&)
 {
 }
 
 void IsoTLSLayout::add(IsoTLSEntry* entry)
 {
-    static StaticMutex addingMutex;
+    static Mutex addingMutex;
     RELEASE_BASSERT(!entry->m_next);
-    std::lock_guard<StaticMutex> locking(addingMutex);
+    std::lock_guard<Mutex> locking(addingMutex);
     if (m_head) {
         RELEASE_BASSERT(m_tail);
         entry->m_offset = roundUpToMultipleOf(entry->alignment(), m_tail->extent());
